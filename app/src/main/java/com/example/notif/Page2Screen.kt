@@ -31,9 +31,12 @@ fun Page2Screen(
             )
             Text(
                 text = "Anda datang dari notifikasi Halaman 2!",
-                modifier = Modifier.padding(bottom = 24.dp)
+                modifier = Modifier.padding(bottom = 32.dp)
             )
-            Button(onClick = onNavigateBack) {
+            Button(
+                onClick = onNavigateBack,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            ) {
                 Text("Kembali ke Home")
             }
         }

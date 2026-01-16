@@ -20,11 +20,18 @@ class DelayedNotificationWorker(
 
         createNotificationChannelIfNeeded()
 
+        val bigTextStyle = NotificationCompat.BigTextStyle()
+            .bigText("Notifikasi ini muncul setelah 10 detik, bahkan setelah aplikasi ditutup! Ini adalah notifikasi yang dijadwalkan menggunakan WorkManager.")
+            .setBigContentTitle("Notifikasi Tertunda")
+            .setSummaryText("Kotlin Demo Notification")
+
         val notification = NotificationCompat.Builder(applicationContext, channelId)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("Notifikasi Tertunda")
-            .setContentText("Notifikasi ini muncul setelah 10 detik, bahkan setelah aplikasi ditutup!")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentTitle("Notification Alert")
+            .setContentText("Kotlin Demo Notification")
+            .setStyle(bigTextStyle)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setAutoCancel(true)
             .build()
 
@@ -49,9 +56,11 @@ class DelayedNotificationWorker(
             val channel = NotificationChannel(
                 channelId,
                 "Test Notification Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Channel untuk testing notifikasi"
+                enableVibration(true)
+                enableLights(true)
             }
             val notificationManager =
                 applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

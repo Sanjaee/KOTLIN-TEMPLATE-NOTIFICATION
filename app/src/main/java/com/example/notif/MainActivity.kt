@@ -79,9 +79,11 @@ class MainActivity : ComponentActivity() {
             val channel = NotificationChannel(
                 channelId,
                 "Test Notification Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Channel untuk testing notifikasi"
+                enableVibration(true)
+                enableLights(true)
             }
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
@@ -99,19 +101,29 @@ fun AppNavigation(startDestination: String) {
     ) {
         composable(PAGE_HOME) {
             NotificationScreen(
-                channelId = "test_notification_channel",
-                onNavigateToPage1 = { navController.navigate(PAGE_1) },
-                onNavigateToPage2 = { navController.navigate(PAGE_2) }
+                channelId = "test_notification_channel"
             )
         }
         composable(PAGE_1) {
             Page1Screen(
-                onNavigateBack = { navController.popBackStack(PAGE_HOME, inclusive = false) }
+                onNavigateBack = { 
+                    if (navController.currentDestination?.route != PAGE_HOME) {
+                        navController.navigate(PAGE_HOME) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
             )
         }
         composable(PAGE_2) {
             Page2Screen(
-                onNavigateBack = { navController.popBackStack(PAGE_HOME, inclusive = false) }
+                onNavigateBack = { 
+                    if (navController.currentDestination?.route != PAGE_HOME) {
+                        navController.navigate(PAGE_HOME) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
             )
         }
     }
@@ -119,9 +131,7 @@ fun AppNavigation(startDestination: String) {
 
 @Composable
 fun NotificationScreen(
-    channelId: String,
-    onNavigateToPage1: () -> Unit,
-    onNavigateToPage2: () -> Unit
+    channelId: String
 ) {
     val context = LocalContext.current
 
@@ -136,7 +146,7 @@ fun NotificationScreen(
         pendingAction = null
     }
 
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -243,11 +253,18 @@ private fun showNotificationToPage1(context: Context, channelId: String) {
         pendingIntentFlags
     )
 
+    val bigTextStyle = NotificationCompat.BigTextStyle()
+        .bigText("Klik untuk membuka Halaman 1. Notifikasi ini akan membawa Anda langsung ke halaman pertama aplikasi.")
+        .setBigContentTitle("Notifikasi ke Halaman 1")
+        .setSummaryText("Kotlin Demo Notification")
+
     val notification = NotificationCompat.Builder(context, channelId)
         .setSmallIcon(android.R.drawable.ic_dialog_info)
-        .setContentTitle("Notifikasi ke Halaman 1")
-        .setContentText("Klik untuk membuka Halaman 1")
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setContentTitle("Notification Alert")
+        .setContentText("Kotlin Demo Notification")
+        .setStyle(bigTextStyle)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setDefaults(NotificationCompat.DEFAULT_ALL)
         .setContentIntent(pendingIntent)
         .setAutoCancel(true)
         .build()
@@ -283,11 +300,18 @@ private fun showNotificationToPage2(context: Context, channelId: String) {
         pendingIntentFlags
     )
 
+    val bigTextStyle = NotificationCompat.BigTextStyle()
+        .bigText("Klik untuk membuka Halaman 2. Notifikasi ini akan membawa Anda langsung ke halaman kedua aplikasi.")
+        .setBigContentTitle("Notifikasi ke Halaman 2")
+        .setSummaryText("Kotlin Demo Notification")
+
     val notification = NotificationCompat.Builder(context, channelId)
         .setSmallIcon(android.R.drawable.ic_dialog_info)
-        .setContentTitle("Notifikasi ke Halaman 2")
-        .setContentText("Klik untuk membuka Halaman 2")
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setContentTitle("Notification Alert")
+        .setContentText("Kotlin Demo Notification")
+        .setStyle(bigTextStyle)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setDefaults(NotificationCompat.DEFAULT_ALL)
         .setContentIntent(pendingIntent)
         .setAutoCancel(true)
         .build()
